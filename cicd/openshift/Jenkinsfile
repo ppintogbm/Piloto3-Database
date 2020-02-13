@@ -45,6 +45,8 @@ spec:
       volumeMounts:
         - mountPath: /home/jenkins/.docker
           name: docker-credentials
+      securityContext:
+        priviliged: true
       resources:
         requests:
           cpu: "100m"
