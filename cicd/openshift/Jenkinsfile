@@ -36,14 +36,14 @@ spec:
       volumeMounts:
         - name: docker-credentials
           mountPath: /.docker
-    - name: kaniko
-      image: gcr.io/kaniko-project/executor:debug-v0.15.0
+    - name: buildah
+      image: quay.io/buildah/stable
       imagePullPolicy: Always
       command:
-        - /busybox/cat
+        - cat
       tty: true
       volumeMounts:
-        - mountPath: /kaniko/.docker
+        - mountPath: /home/jenkins/.docker
           name: docker-credentials
       resources:
         requests:
@@ -69,20 +69,18 @@ spec:
 		}
 		stage('Build Image'){
 			environment{
-        PATH="/busybox:/kaniko:$PATH"
 				DESTINATION="${params.imageRepository}"
 				TAG="${tag}"
 				CLOUD="${params.cloudName}"
-        DOCKER_CONFIG="/kaniko/.docker"
 			}
 			steps{
-				container('kaniko'){
-					sh  '''#!/busybox/sh
+				container('buildah'){
+					sh  '''#!/bin/bash
 							echo "Building $DESTINATION with user $(id -u):$(id -g)"
               echo `pwd`
               echo `ls -l`
-              echo `ls -l /kaniko`
-							/kaniko/executor --context="dir://`pwd`" --destination="$DESTINATION" --verbosity=debug
+              buildah bud -t $DESTINATION:$TAG .
+              buildah tag -t $DESTINATION:latest
 							'''
 				}
 			}
