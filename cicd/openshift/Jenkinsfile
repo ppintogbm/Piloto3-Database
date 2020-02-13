@@ -13,11 +13,13 @@ spec:
   serviceAccount: jenkins
   volumes:
     - name: docker-credentials
-      secret:
-        secretName: ${jenkinsDockerSecret}
-    - name: docker-sock
-      hostPath:
-        path: /var/run/docker.sock
+      projected:
+        sources:
+          - secret:
+              name: ${jenkinsDockerSecret}
+              items:
+                - key: .dockercfg
+                  path: config.json
   containers:
     - name: origin
       image: openshift/origin-cli
@@ -41,9 +43,8 @@ spec:
         - /busybox/cat
       tty: true
       volumeMounts:
-        - mountPath: /kaniko/.docker/config.json
+        - mountPath: /kaniko/.docker/
           name: docker-credentials
-          subPath: .dockercfg
       resources:
         requests:
           cpu: "100m"
