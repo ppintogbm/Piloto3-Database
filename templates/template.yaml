@@ -26,7 +26,7 @@ parameters:
     displayName: Service Account 
     name: SA
     required: true
-    value: default
+    value: db2sa
   - description: Database password
     displayName: Password
     name: PASSWORD
@@ -89,7 +89,7 @@ objects:
           hostIPC: true
           initContainers:
             - name: init-db2
-              image: ${IMAGE}:latest
+              image: " "
               imagePullPolicy: "Always"
               command:
                 - sh
@@ -201,6 +201,7 @@ objects:
           imageChangeParams:
             containerNames:
               - db2
+              - init-db2
             automatic: true
             from:
               kind: ImageStreamTag
