@@ -48,7 +48,7 @@ objects:
     stringData:
       password: ${PASSWORD}
   - kind: ConfigMap
-    apiVersion:
+    apiVersion: v1
     metadata:
       name: ${NAME}
       annotations:
