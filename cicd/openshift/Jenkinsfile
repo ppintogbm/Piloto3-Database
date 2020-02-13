@@ -46,7 +46,8 @@ spec:
         - mountPath: /home/jenkins/.docker
           name: docker-credentials
       securityContext:
-        priviliged: true
+        runAsUser: 0
+        allowPrivilegeEscalation: true
       resources:
         requests:
           cpu: "100m"
@@ -82,7 +83,7 @@ spec:
               echo `pwd`
               echo `ls -l`
               buildah bud -t $DESTINATION:$TAG .
-              buildah tag -t $DESTINATION:latest
+              buildah tag $DESTINATION:$TAG $DESTINATION:latest
 							'''
 				}
 			}
