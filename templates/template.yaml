@@ -187,15 +187,15 @@ objects:
                 claimName: ${NAME}
             - name: db2-2
               emptyDir: {}
-             - name: cgvol
-                hostPath:
-                  path: /sys/fs/cgroup
-              - name: sys
-                hostPath:
-                  path: /proc/sys
-              - name: proc
-                hostPath:
-                  path: /proc
+            - name: cgvol
+              hostPath:
+                path: /sys/fs/cgroup
+            - name: sys
+              hostPath:
+                path: /proc/sys
+            - name: proc
+              hostPath:
+                path: /proc
       triggers:
         - type: ImageChange
           imageChangeParams:
