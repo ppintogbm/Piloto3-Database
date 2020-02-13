@@ -131,7 +131,7 @@ objects:
                       name: ${NAME}
                       key: password
                 - name: DB2INSTANCE
-                  value: DB2INST1
+                  value: db2inst1
               volumeMounts:
                 - mountPath: /sys/fs/cgroup
                   name: cgvol
