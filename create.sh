@@ -4,7 +4,7 @@ DB2_DBNAME=${DB2_DBNAME:-ALGO}
 
 echo "Creando la base de datos '${DB2_DBNAME}' y la tabla..."
 #su - db2inst1 -c 'db2 create db $DB_NAME'
-su - db2inst1 -c "db2 connect to $DB2_DBNAME; db2 \"CREATE TABLE OPER01
+su - db2inst1 -c "db2 connect to ${DB2_DBNAME}; db2 \"CREATE TABLE OPER01
 (HORA_TRANS timestamp not null,
  OPERANDO1  decimal(12,2) not null,
  OPERANDO2  decimal(12,2) not null,
