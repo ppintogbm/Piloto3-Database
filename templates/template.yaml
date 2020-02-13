@@ -130,6 +130,8 @@ objects:
                     secretKeyRef:
                       name: ${NAME}
                       key: password
+                - name: DB2INSTANCE
+                  value: DB2INST1
               volumeMounts:
                 - mountPath: /sys/fs/cgroup
                   name: cgvol
