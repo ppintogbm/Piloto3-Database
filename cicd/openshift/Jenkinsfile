@@ -77,10 +77,10 @@ spec:
 			}
 			steps{
 				container('kaniko'){
-					sh '''#!/busbox/sh
-								echo "Building $DESTINATION with user $(whoami)"
-                /kaniko/executor --context="dir://`pwd`" --destination=$DESTINATION:$TAG --verbosity=debug
-						 '''
+					sh  '''#!/busybox/sh
+							echo "Building $DESTINATION"
+							/kaniko/executor --context="dir://`pwd`" --destination="$DESTINATION"
+							'''
 				}
 			}
 		}
