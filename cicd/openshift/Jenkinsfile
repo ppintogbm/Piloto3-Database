@@ -37,7 +37,7 @@ spec:
         - name: docker-credentials
           mountPath: /.docker
     - name: kaniko
-      image: gcr.io/kaniko-project/executor:debug
+      image: gcr.io/kaniko-project/executor:debug-v0.15.0
       imagePullPolicy: Always
       command:
         - /busybox/cat
@@ -69,7 +69,7 @@ spec:
 		}
 		stage('Build Image'){
 			environment{
-        PATH="$PATH:/busybox"
+        PATH="/busybox:/kaniko:$PATH"
 				DESTINATION="${params.imageRepository}"
 				TAG="${tag}"
 				CLOUD="${params.cloudName}"
