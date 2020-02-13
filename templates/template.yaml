@@ -84,6 +84,24 @@ objects:
             app: ${NAME}
         spec:
           serviceAccount: ${SA}
+          hostNetwork: false
+          hostPID: false
+          hostIPC: true
+          initContainers:
+            - name: init-db2
+              image: ${IMAGE}:latest
+              imagePullPolicy: "Always"
+              command:
+                - sh
+                - -c
+                - '/var/db2_setup/lib/set_kernel_params.sh'
+              volumeMounts:
+                - name: proc
+                  mountPath: /host/proc
+                  readOnly:  false
+                - name: sys
+                  mountPath: /host/proc/sys
+                  readOnly: false
           containers:
             - name: db2
               image: " "
@@ -113,30 +131,55 @@ objects:
                       name: ${NAME}
                       key: password
               volumeMounts:
+                - mountPath: /sys/fs/cgroup
+                  name: cgvol
+                  readOnly: true
                 - mountPath: /database
                   name: db2-1
                 - mountPath: /hadr
                   name: db2-2
+              livenessProbe:
+                exec:
+                  command:
+                  - sh
+                  - -c
+                  - su - $DB2INSTANCE  -c '/database/config/$DB2INSTANCE/sqllib/bin/db2gcf -s'
+                initialDelaySeconds: 810
+                periodSeconds: 90
+                failureThreshold: 3
+              readinessProbe:
+                exec:
+                  command:
+                  - sh
+                  - -c
+                  - su - $DB2INSTANCE  -c '/database/config/$DB2INSTANCE/sqllib/bin/db2gcf -s'
+                initialDelaySeconds: 810
+                periodSeconds: 90
+                failureThreshold: 3
               securityContext:
-                allowPrivilegeEscalation: false
+                allowPrivilegeEscalation: true
                 readOnlyRootFilesystem: false
-                runAsNonRoot: true
-                runAsUser: 1000
+                runAsNonRoot: false
+                runAsUser: 0
                 privileged: false
                 capabilities:
                   add:
+                    - SYS_RESOURCE
+                    - IPC_OWNER
+                    - SYS_NICE
                     - SETPCAP
-                    - AUDIT_WRITE
                     - CHOWN
+                    - FOWNER
                     - NET_RAW
                     - DAC_OVERRIDE
-                    - FOWNER
                     - FSETID
                     - KILL
-                    - SETUID
                     - SETGID
-                    - NET_BIND_SERVICE
+                    - SETUID
+                    - MKNOD
+                    - AUDIT_WRITE
                     - SYS_CHROOT
+                    - NET_BIND_SERVICE
                     - SETFCAP
           volumes:
             - name: db2-1
@@ -144,6 +187,15 @@ objects:
                 claimName: ${NAME}
             - name: db2-2
               emptyDir: {}
+             - name: cgvol
+                hostPath:
+                  path: /sys/fs/cgroup
+              - name: sys
+                hostPath:
+                  path: /proc/sys
+              - name: proc
+                hostPath:
+                  path: /proc
       triggers:
         - type: ImageChange
           imageChangeParams:
