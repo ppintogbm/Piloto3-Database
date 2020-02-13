@@ -78,8 +78,10 @@ spec:
 			steps{
 				container('kaniko'){
 					sh  '''#!/busybox/sh
-							echo "Building $DESTINATION"
-							/kaniko/executor --context="dir://`pwd`" --destination="$DESTINATION"
+							echo "Building $DESTINATION with user $(whoami)"
+              echo `pwd`
+              echo `ls -l`
+							/kaniko/executor --context="dir://`pwd`" --destination="$DESTINATION" --verbosity=debug
 							'''
 				}
 			}
