@@ -43,7 +43,7 @@ spec:
         - /busybox/cat
       tty: true
       volumeMounts:
-        - mountPath: /kaniko/.docker/
+        - mountPath: /kaniko/.docker
           name: docker-credentials
       resources:
         requests:
