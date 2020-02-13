@@ -86,19 +86,6 @@ objects:
           serviceAccount: ${SA}
           containers:
             - name: db2
-              env:
-                - name: LICENSE 
-                  value: accept
-                - name: DB2_DBNAME
-                  valueFrom:
-                    configMapKeyRef:
-                      name: ${NAME}
-                      key: dbname
-                - name: DB2INST1_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}
-                      key: password
               image: " "
               imagePullPolicy: "Always"
               ports:
@@ -112,11 +99,24 @@ objects:
                   protocol: TCP
                 - containerPort: 60007
                   protocol: TCP
+              env:
+                - name: LICENSE 
+                  value: accept
+                - name: DB2_DBNAME
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${NAME}
+                      key: dbname
+                - name: DB2INST1_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}
+                      key: password
               volumeMounts:
-              - mountPath: /database
-                name: db2-1
-              - mountPath: /hadr
-                name: db2-2
+                - mountPath: /database
+                  name: db2-1
+                - mountPath: /hadr
+                  name: db2-2
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: false
@@ -125,20 +125,20 @@ objects:
                 privileged: false
                 capabilities:
                   add:
-                  - SETPCAP
-                  - AUDIT_WRITE
-                  - CHOWN
-                  - NET_RAW
-                  - DAC_OVERRIDE
-                  - FOWNER
-                  - FSETID
-                  - KILL
-                  - SETUID
-                  - SETGID
-                  - NET_BIND_SERVICE
-                  - SYS_CHROOT
-                  - SETFCAP
-            volumes:
+                    - SETPCAP
+                    - AUDIT_WRITE
+                    - CHOWN
+                    - NET_RAW
+                    - DAC_OVERRIDE
+                    - FOWNER
+                    - FSETID
+                    - KILL
+                    - SETUID
+                    - SETGID
+                    - NET_BIND_SERVICE
+                    - SYS_CHROOT
+                    - SETFCAP
+          volumes:
             - name: db2-1
               persistentVolumeClaim: 
                 claimName: ${NAME}
