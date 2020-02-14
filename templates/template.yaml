@@ -140,24 +140,24 @@ objects:
                   name: db2-1
                 - mountPath: /hadr
                   name: db2-2
-#              livenessProbe:
-#                exec:
-#                  command:
-#                  - sh
-#                  - -c
-#                  - su - $DB2INSTANCE  -c '/database/config/$DB2INSTANCE/sqllib/bin/db2gcf -s'
-#                initialDelaySeconds: 810
-#                periodSeconds: 90
-#                failureThreshold: 3
-#              readinessProbe:
-#                exec:
-#                  command:
-#                  - sh
-#                  - -c
-#                  - su - $DB2INSTANCE  -c '/database/config/$DB2INSTANCE/sqllib/bin/db2gcf -s'
-#                initialDelaySeconds: 810
-#                periodSeconds: 90
-#                failureThreshold: 3
+              livenessProbe:
+                exec:
+                  command:
+                  - sh
+                  - -c
+                  - su - $DB2INSTANCE  -c '/database/config/$DB2INSTANCE/sqllib/bin/db2gcf -s'
+                initialDelaySeconds: 810
+                periodSeconds: 90
+                failureThreshold: 3
+              readinessProbe:
+                exec:
+                  command:
+                  - sh
+                  - -c
+                  - su - $DB2INSTANCE  -c '/database/config/$DB2INSTANCE/sqllib/bin/db2gcf -s'
+                initialDelaySeconds: 810
+                periodSeconds: 90
+                failureThreshold: 3
               securityContext:
                 privileged: true
           volumes:

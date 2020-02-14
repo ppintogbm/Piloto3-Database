@@ -11,5 +11,5 @@ su - db2inst1 -c "db2 connect to ${DB2_DBNAME}; db2 \"CREATE TABLE OPER01
  OPERADOR varchar(5) not null,
  Primary Key (HORA_TRANS))\""
 echo "Verificando la informacion creada..."
-su - db2inst1 -c 'db2 connect to $DB2_DBNAME; db2 list tables; db2 describe table db2inst1.oper01; db2 disconnect test'
+su - db2inst1 -c 'db2 connect to ${DB2_DBNAME}; db2 list tables; db2 describe table db2inst1.oper01; db2 disconnect test'
 echo "Fin"
