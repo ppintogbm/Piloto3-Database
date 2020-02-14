@@ -19,9 +19,9 @@ pipeline{
 					script{
 						openshift.withCluster(){
 							openshift.withProject(){
-								def imagestream = openshift.selector("imagestream/${params.app}-db")
+								env.imagestream = openshift.selector("imagestream/${params.app}-db")
 								if(!imagestream.exists()){
-									imagestream = openshift.apply([apiVersion: 'v1',kind: 'ImageStream', metadata: [name: "${params.app}-db", labels: [app: "${params.app}" ]]])
+									env.imagestream = openshift.apply([apiVersion: 'v1',kind: 'ImageStream', metadata: [name: "${params.app}-db", labels: [app: "${params.app}" ]]])
 								}
 								echo "Database image repo: " + imagestream.object().status.dockerImageRepository
 							}
@@ -48,7 +48,7 @@ pipeline{
 			steps{
 				container('kaniko'){
 					script{
-						def repository = imagestream.object().status.dockerImageRepository
+						def repository = env.imagestream.object().status.dockerImageRepository
 					}
 					sh 	'''#!/busybox/sh
 								echo "Building ${repository}"
