@@ -3,7 +3,7 @@ pipeline{
 		kubernetes{
 			cloud "openshift"
 			label "db-build"
-			yaml  "cicd/openshift/pod.yaml"		
+			yaml  "cicd/openshift/pod-kaniko.yaml"		
     }
   }
 	parameters{
@@ -15,13 +15,23 @@ pipeline{
 				script{
 					tag = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
 				}
+				container('origin-cli'){
+					script{
+						openshift.withCluster(){
+							openshift.withProject(){
+								def imagestream = openshift.create("{'apiVersion':'v1','kind':'ImageStream','metadata':{'name':'${app}-db','labels':{'app':'${app}'}}}")
+								echo "Database image repo: " + imagestream.object().status.dockerImageRepository
+							}
+						}
+					}
+				}
 			}
 		}
 		stage('Build Image'){
 			steps{
 				container('docker'){
 					sh '''#!/bin/sh
-								echo "Building $DESTINATION with user $(whoami)"
+								echo "Building "
                 docker login -u $(whoami) -p $(cat /var/run/secrets/kubernetes.io/serviceaccount/token) $DESTINATION
 								docker build -t $DESTINATION:$TAG -t $DESTINATION:latest .
                 docker push $DESTINATION:$TAG

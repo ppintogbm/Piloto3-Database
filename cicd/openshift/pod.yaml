@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels: 
+    app: jenkins-ephemeral
+spec:
+  serviceAccount: jenkins
+  volumes:
+    - name: docker-sock
+      hostPath:
+        path: /var/run/docker.sock
+  containers:
+    - name: origin
+      image: openshift/origin-cli
+      command:
+        - cat
+      tty: true
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "32Mi"
+        limits:
+          cpu: "1000m"
+          memory: "512Mi"
+    - name: docker
+      image: docker:1.13.1
+      imagePullPolicy: Always
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+      securityContext:
+        allowPrivilegeEscalation: true
+        privileged: true
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "512Mi"
+        limits:
+          cpu: "2000m"
+          memory: "2048Mi"
