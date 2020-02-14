@@ -3,7 +3,7 @@ pipeline{
 		kubernetes{
 			cloud "openshift"
 			label "db-build"
-			yaml  "cicd/openshift/pod-kaniko.yaml"		
+			yamlFile  "cicd/openshift/pod-kaniko.yaml"		
     }
   }
 	parameters{
