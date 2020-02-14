@@ -19,7 +19,7 @@ pipeline{
 					script{
 						openshift.withCluster(){
 							openshift.withProject(){
-								def imagestream = openshift.selector('imagestream/${params.app}-db')
+								def imagestream = openshift.selector("imagestream/${params.app}-db")
 								if(!imagestream.exists()){
 									imagestream = openshift.apply([apiVersion: 'v1',kind: 'ImageStream', metadata: [name: "${params.app}-db", labels: [app: "${params.app}" ]]])
 								}
