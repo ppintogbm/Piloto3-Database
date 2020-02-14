@@ -82,6 +82,8 @@ objects:
         template: calculadora-db
         version: "1.0"
         app: ${APP}
+      strategy:
+        type: Recreate
       template:
         metadata:
           labels:
