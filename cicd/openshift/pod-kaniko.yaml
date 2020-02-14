@@ -5,15 +5,6 @@ metadata:
     app: jenkins-ephemeral
 spec:
   serviceAccount: jenkins
-  volumes:
-    - name: docker-credentials
-      projected:
-        sources:
-          - secret:
-              name: jenkins-dockercfg-rjj6m
-              items:
-                - key: .dockercfg
-                  path: config.json
   containers:
     - name: origin
       image: openshift/origin-cli
@@ -38,12 +29,6 @@ spec:
         - name: DOCKER_CONFIG
           value: /kaniko/.docker
       tty: true
-      volumeMounts:
-        - mountPath: /kaniko/.docker
-          name: docker-credentials
-      securityContext:
-        allowPrivilegeEscalation: true
-        privileged: true
       resources:
         requests:
           cpu: "100m"

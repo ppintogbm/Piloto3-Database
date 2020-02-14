@@ -49,7 +49,8 @@ pipeline{
 			steps{
 				container('kaniko'){
 					sh 	"""#!/busybox/sh
-								printenv
+								mkdir -pv /kaniko/.docker
+								echo "{\"auths\":{\"${env.repository}\":{\"username\":\"serviceaccount\",\"password\":\"$(/var/run/secrets/kubernetesio/serviceaccount/token)\"}}}" > /kaniko/.docker/config.json
 								echo 'Building ${env.repository}'
 								/kaniko/executor --context='dir://`pwd`' --destination=${env.repository}:${env.tag} --verbosity=debug
 						"""
