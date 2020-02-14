@@ -76,7 +76,7 @@ objects:
     metadata:
       name: ${APP}-${NAME}
     labels:
-      app: ${APP
+      app: ${APP}
     spec:
       replicas: 1
       selector:
