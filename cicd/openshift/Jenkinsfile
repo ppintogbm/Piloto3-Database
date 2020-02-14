@@ -108,6 +108,13 @@ spec:
                 }
                 def latestVersion = deployment.object().status.latestVersion
                 echo "Checking application component status: ${latestVersion}..."
+                def rc = openshift.selector('rc',"${appName}-${latestVersion}")
+                timeout(time:10, unit: 'MINUTES'){
+                  rc.untilEach(1){
+                    def rcMap = it.object()
+                    return (rcMap.status.replicas.equals(rcMap.status.readyReplicas))
+                  }
+                }
               }
             }
           }
