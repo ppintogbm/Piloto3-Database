@@ -61,6 +61,7 @@ spec:
 	parameters{
 		string(name: "imageRepository", description: "Container image repository", defaultValue: "docker-registry.default.svc.cluster.local:5000/piloto3/db")
 		string(name: "jenkinsDockerSecret", description: "Jenkins Dockercfg Secret")
+    string(name: "appOverride", description: "Application Name overrides", defaultValue: "api")
 	}
 	stages{
 		stage('Prepare'){
@@ -98,13 +99,12 @@ spec:
           script{
             openshift.withCluster(){
               openshift.withProject(){
-                def model = readFile "templates/template.yaml"
-                openshift.apply(model)
-                def app = openshift.selector("dc",app: 'api',template: 'calculadora-db',component: 'database')
-                if(!app.exists()){
-                  openshift.newApp('--template=calculadora-db','--param=NAME=db')
+                def applicationName = !params.appOverride? "api":params.appOverride
+                def deployment = openshift.selector('dc',[app: 'api',component: 'database'])
+                if(!deployment.exists()){
+                  
+                  openshift.apply(openshift.process("templates/template.yaml","-p=APP=api"))
                 }
-
               }
             }
           }
