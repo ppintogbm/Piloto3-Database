@@ -103,12 +103,13 @@ spec:
                 def deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
                 if(!deployment.exists()){
                   echo "Deploying application component: Database..."
-                  openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=api"))
+                  openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=${applicationName}"))
                   deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
                 }
                 def latestVersion = deployment.object().status.latestVersion
+                def deploymentName = deployment.object().metadata.name
                 echo "Checking application component status: ${latestVersion}..."
-                def rc = openshift.selector('rc',"${appName}-${latestVersion}")
+                def rc = openshift.selector('rc',"${deploymentName}-${latestVersion}")
                 timeout(time:10, unit: 'MINUTES'){
                   rc.untilEach(1){
                     def rcMap = it.object()
