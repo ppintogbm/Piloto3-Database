@@ -105,7 +105,7 @@ spec:
                   deployment = openshift.selector('dc',[template: 'calculadora-db', app: 'db'])
                 }
                 */
-                def model = readFile "template/template.yaml"
+                def model = readFile "templates/template.yaml"
                 openshift.apply(model)
               }
             }
