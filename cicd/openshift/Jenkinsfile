@@ -61,7 +61,7 @@ spec:
 	parameters{
 		string(name: "imageRepository", description: "Container image repository", defaultValue: "docker-registry.default.svc.cluster.local:5000/piloto3/db")
 		string(name: "jenkinsDockerSecret", description: "Jenkins Dockercfg Secret")
-    string(name: "appOverride", description: "Application Name overrides", defaultValue: "api")
+    string(name: "appOverride", description: "Application Name overrides")
 	}
 	stages{
 		stage('Prepare'){
