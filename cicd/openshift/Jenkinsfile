@@ -48,10 +48,10 @@ pipeline{
 		stage('Build Image'){
 			steps{
 				container('kaniko'){
-					sh 	'''#!/busybox/sh
-								echo "Building ${env.repository}"
-								/kaniko/executor --context=dir://`pwd` --destination=${env.repository}:${env.tag}
-						'''
+					sh 	"""#!/busybox/sh
+								echo 'Building ${env.repository}'
+								/kaniko/executor --context='dir://`pwd`' --destination=${env.repository}:${env.tag}
+						"""
 				}
 			}
 		}
