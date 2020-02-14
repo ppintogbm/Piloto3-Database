@@ -15,7 +15,7 @@ pipeline{
 				script{
 					tag = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
 				}
-				container('origin-cli'){
+				container('origin'){
 					script{
 						openshift.withCluster(){
 							openshift.withProject(){
