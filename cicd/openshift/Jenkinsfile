@@ -98,12 +98,14 @@ spec:
           script{
             openshift.withCluster(){
               openshift.withProject(){
-                def deployment = openshift.selector('dc',[template: 'calculadora-db', app: 'db'])
+                /*def deployment = openshift.selector('dc',[template: 'calculadora-db', app: 'db'])
                 if(!deployment.exists()){
                   def model = openshift.process('-f','templates/template.yaml',"-p","NAME=db")
                   openshift.apply(model)
                   deployment = openshift.selector('dc',[template: 'calculadora-db', app: 'db'])
                 }
+                */
+                openshift.apply("template/template.yaml")
               }
             }
           }
