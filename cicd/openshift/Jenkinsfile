@@ -102,8 +102,12 @@ spec:
                 def applicationName = !params.appOverride? "api":params.appOverride
                 def deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
                 if(!deployment.exists()){
+                  echo "Deploying application component: Database..."
                   openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=api"))
-                } 
+                  deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
+                }
+                def latestVersion = deployment.object().status.latestVersion
+                echo "Checking application component status: ${latestVersion}..."
               }
             }
           }
