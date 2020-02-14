@@ -6,9 +6,15 @@ metadata:
 spec:
   serviceAccount: jenkins
   volumes:
-    - name: docker-sock
-      hostPath:
-        path: /var/run/docker.sock
+    - name: docker-credentials
+      projected:
+        sources:
+          - secret:
+              name: jenkins-dockercfg-rjj6m
+              items:
+                - key: .dockercfg
+                  path: config.json
+                  mode: 777
   containers:
     - name: origin
       image: openshift/origin-cli
@@ -22,15 +28,20 @@ spec:
         limits:
           cpu: "1000m"
           memory: "512Mi"
-    - name: docker
-      image: docker:1.13.1
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:debug
       imagePullPolicy: Always
       command:
-        - cat
+        - /busybox/cat
+      env:
+        - name: PATH
+          value: "$PATH:/busybox:/kaniko"
+        - name: DOCKER_CONFIG
+          value: /kaniko/.docker
       tty: true
       volumeMounts:
-        - mountPath: /var/run/docker.sock
-          name: docker-sock
+        - mountPath: /kaniko/.docker
+          name: docker-credentials
       securityContext:
         allowPrivilegeEscalation: true
         privileged: true
