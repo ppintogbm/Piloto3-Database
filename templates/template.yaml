@@ -120,7 +120,7 @@ objects:
               env:
                 - name: LICENSE 
                   value: accept
-                - name: DB2_DBNAME
+                - name: DBNAME
                   valueFrom:
                     configMapKeyRef:
                       name: ${NAME}
