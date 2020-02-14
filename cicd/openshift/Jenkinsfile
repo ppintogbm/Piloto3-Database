@@ -103,7 +103,7 @@ spec:
                 def deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
                 if(!deployment.exists()){
                   openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=api"))
-                }
+                } 
               }
             }
           }

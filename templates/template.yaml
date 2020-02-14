@@ -8,6 +8,7 @@ labels:
   template: calculadora-db
   version: "1.0"
   component: "database"
+  app: "${APP}"
 parameters:
   - description: Application deployment name
     displayName: Application
@@ -75,8 +76,6 @@ objects:
     apiVersion: v1
     metadata:
       name: ${APP}-${NAME}
-    labels:
-      app: ${APP}
     spec:
       replicas: 1
       selector:
