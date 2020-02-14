@@ -47,7 +47,9 @@ pipeline{
 		stage('Build Image'){
 			steps{
 				container('kaniko'){
-					repository = imagestream.object().status.dockerImageRepository
+					script{
+						def repository = imagestream.object().status.dockerImageRepository
+					}
 					sh 	'''#!/busybox/sh
 								echo "Building ${repository}"
 								/kaniko/executor --context=dir://`pwd` --destination=${repository}:${tag}
