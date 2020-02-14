@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB2_DBNAME=${DB2_DBNAME:-ALGO}
+DB2_DBNAME=${DBNAME:-ALGO}
 
 echo "Creando la base de datos '${DB2_DBNAME}' y la tabla..."
 #su - db2inst1 -c 'db2 create db $DB_NAME'
