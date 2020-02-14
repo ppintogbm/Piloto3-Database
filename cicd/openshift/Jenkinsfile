@@ -49,7 +49,7 @@ pipeline{
 			steps{
 				container('kaniko'){
 					script{
-						env.config = '{"auths":{"'+env.repository+'":{"username":"openshift","password":"$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"}}}'
+						env.config = '{\"auths\":{\"'+env.repository+'\":{\"username\":\"openshift\",\"password\":\"$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\"}}}'
 					}
 					sh 	"""#!/busybox/sh
 								mkdir -pv /kaniko/.docker
