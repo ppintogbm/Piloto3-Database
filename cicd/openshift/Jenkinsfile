@@ -48,9 +48,12 @@ pipeline{
 		stage('Build Image'){
 			steps{
 				container('kaniko'){
+					script{
+						env.config = echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}"
+					}
 					sh 	"""#!/busybox/sh
 								mkdir -pv /kaniko/.docker
-								echo "{\"auths\":{\"${env.repository}\":{\"username\":\"serviceaccount\",\"password\":\"$(/var/run/secrets/kubernetesio/serviceaccount/token)\"}}}" > /kaniko/.docker/config.json
+								echo ${env.config} | tee -a /kaniko/.docker/config.json
 								echo 'Building ${env.repository}'
 								/kaniko/executor --context='dir://`pwd`' --destination=${env.repository}:${env.tag} --verbosity=debug
 						"""
