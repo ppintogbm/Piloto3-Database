@@ -19,7 +19,7 @@ pipeline{
 					script{
 						openshift.withCluster(){
 							openshift.withProject(){
-								def imagestream = openshift.create([apiVersion: 'v1',kind: 'ImageStream', metadata: [name: "${params.app}-db", labels: [app: "${params.app}" ]])
+								def imagestream = openshift.create([apiVersion: 'v1',kind: 'ImageStream', metadata: [name: "${params.app}-db", labels: [app: "${params.app}" ]]])
 								echo "Database image repo: " + imagestream.object().status.dockerImageRepository
 							}
 						}
