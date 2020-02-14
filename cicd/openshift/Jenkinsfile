@@ -13,17 +13,18 @@ pipeline{
 		stage('Prepare'){
 			steps{
 				script{
-					tag = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+					env.tag = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
 				}
 				container('origin'){
 					script{
 						openshift.withCluster(){
 							openshift.withProject(){
-								env.imagestream = openshift.selector("imagestream/${params.app}-db")
+								def imagestream = openshift.selector("imagestream/${params.app}-db")
 								if(!imagestream.exists()){
-									env.imagestream = openshift.apply([apiVersion: 'v1',kind: 'ImageStream', metadata: [name: "${params.app}-db", labels: [app: "${params.app}" ]]])
+									imagestream = openshift.apply([apiVersion: 'v1',kind: 'ImageStream', metadata: [name: "${params.app}-db", labels: [app: "${params.app}" ]]])
 								}
-								echo "Database image repo: " + imagestream.object().status.dockerImageRepository
+								env.repository = imagestream.object().status.dockerImageRepository
+								echo "Database image repo: ${env.repository}"
 							}
 						}
 					}
@@ -47,12 +48,9 @@ pipeline{
 		stage('Build Image'){
 			steps{
 				container('kaniko'){
-					script{
-						def repository = env.imagestream.object().status.dockerImageRepository
-					}
 					sh 	'''#!/busybox/sh
-								echo "Building ${repository}"
-								/kaniko/executor --context=dir://`pwd` --destination=${repository}:${tag}
+								echo "Building ${env.repository}"
+								/kaniko/executor --context=dir://`pwd` --destination=${env.repository}:${env.tag}
 						'''
 				}
 			}
