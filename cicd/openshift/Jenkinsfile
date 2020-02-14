@@ -100,9 +100,8 @@ spec:
             openshift.withCluster(){
               openshift.withProject(){
                 def applicationName = !params.appOverride? "api":params.appOverride
-                def deployment = openshift.selector('dc',[app: 'api',component: 'database'])
+                def deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
                 if(!deployment.exists()){
-                  
                   openshift.apply(openshift.process("templates/template.yaml","-p=APP=api"))
                 }
               }
