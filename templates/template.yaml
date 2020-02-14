@@ -18,7 +18,7 @@ parameters:
     displayName: Name
     required: true
     name: NAME
-    value: api-db
+    value: db
   - description: The OpenShift Namespace where the ImageStream resides.
     displayName: Namespace
     name: NAMESPACE
@@ -153,7 +153,7 @@ objects:
                   - sh
                   - -c
                   - su - $DB2INSTANCE  -c '/database/config/$DB2INSTANCE/sqllib/bin/db2gcf -s'
-                initialDelaySeconds: 810
+                initialDelaySeconds: 300
                 periodSeconds: 90
                 failureThreshold: 3
               readinessProbe:
@@ -162,7 +162,7 @@ objects:
                   - sh
                   - -c
                   - su - $DB2INSTANCE  -c '/database/config/$DB2INSTANCE/sqllib/bin/db2gcf -s'
-                initialDelaySeconds: 810
+                initialDelaySeconds: 300
                 periodSeconds: 90
                 failureThreshold: 3
               securityContext:
