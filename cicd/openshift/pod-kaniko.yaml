@@ -14,7 +14,7 @@ spec:
               items:
                 - key: .dockercfg
                   path: config.json
-                  mode: 777
+                  mode: 0777
   containers:
     - name: origin
       image: openshift/origin-cli
