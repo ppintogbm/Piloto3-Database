@@ -24,6 +24,7 @@ pipeline{
 									imagestream = openshift.apply([apiVersion: 'v1',kind: 'ImageStream', metadata: [name: "${params.app}-db", labels: [app: "${params.app}" ]]])
 								}
 								env.repository = imagestream.object().status.dockerImageRepository
+								env.registry = env.repository.split("/")[0]
 								echo "Database image repo: ${env.repository}"
 							}
 						}
@@ -46,19 +47,19 @@ pipeline{
 			}
 		}*/
 		stage('Build Image'){
+			environment{
+				REGISTRY="${env.registry}"
+				REPOSITORY="${env.repository}"
+				TAG="${env.tag}"
+			}
 			steps{
 				container('kaniko'){
-					script{
-						env.registry = env.repository.split('/')[0]
-					}
-					sh 	"""#!/busybox/sh
+					sh 	'''#!/busybox/sh
 								mkdir -pv /kaniko/.docker
-								REGISTRY='${env.registry}'
-								echo "{\\"auths\\":{\\"$REGISTRY\\":{\\"username\\":\\"openshift\\",\\"password\\":\\"\$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\\"}}}"} | tee /kaniko/.docker/config.json
-								echo 'Building ${env.repository}'
-								CONTEXT=\$(pwd)
-								/kaniko/executor --context='dir://\$CONTEXT' --destination=${env.repository}:${env.tag} --verbosity=debug
-						"""
+								echo "{\"auths\":{\"$REGISTRY\":{\"username\":\"openshift\",\"password\":\"$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\"}}}" | tee /kaniko/.docker/config.json
+								echo 'Building $REPOSITORY'
+								/kaniko/executor --context='dir://`pwd`' --destination=$REPOSITORY:$TAG
+						'''
 				}
 			}
 		}
