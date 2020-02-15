@@ -56,9 +56,9 @@ pipeline{
 				container('kaniko'){
 					sh 	'''#!/busybox/sh
 								mkdir -pv /kaniko/.docker
-								echo '{\\"auths\\":{\\"$REGISTRY\\":{\\"username\\":\\"openshift\\",\\"password\\":\\"$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\\"}}}' | tee /kaniko/.docker/config.json
-								echo 'Building $REPOSITORY'
-								/kaniko/executor --context='dir://`pwd`' --destination=$REPOSITORY:$TAG
+								echo "{\\"auths\\":{\\"$REGISTRY\\":{\\"username\\":\\"openshift\\",\\"password\\":\\"$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\\"}}}" | tee /kaniko/.docker/config.json
+								echo "Building $REPOSITORY"
+								/kaniko/executor --context="dir://`pwd`" --destination=$REPOSITORY:$TAG
 						'''
 				}
 			}
