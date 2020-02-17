@@ -32,20 +32,6 @@ pipeline{
 				}
 			}
 		}
-		/*
-		stage('Build Image'){
-			steps{
-				container('docker'){
-					sh '''#!/bin/sh
-								echo "Building "
-                docker login -u $(whoami) -p $(cat /var/run/secrets/kubernetes.io/serviceaccount/token) $DESTINATION
-								docker build -t $DESTINATION:$TAG -t $DESTINATION:latest .
-                docker push $DESTINATION:$TAG
-                docker push $DESTINATION:latest
-						 '''
-				}
-			}
-		}*/
 		stage('Build Image'){
 			environment{
 				REGISTRY="${env.registry}"
@@ -58,16 +44,12 @@ pipeline{
 								mkdir -pv /kaniko/.docker
 								echo "{\\"auths\\":{\\"$REGISTRY\\":{\\"username\\":\\"openshift\\",\\"password\\":\\"$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\\"}}}" | tee /kaniko/.docker/config.json
 								echo "Building $REPOSITORY"
-								/kaniko/executor --context="dir://`pwd`" --destination=$REPOSITORY:$TAG
+								/kaniko/executor --context="dir://`pwd`" --destination=$REPOSITORY:$TAG --destination=$REPOSITORY:latest --cache --cache-ttl 24h
 						'''
 				}
 			}
 		}
 		stage('Deploy Image on Openshift'){
-			environment{
-				REPOSITORY="${params.imageRepository}"
-				TAG="${tag}"
-			}
 			steps{
 				container('origin'){
           script{
@@ -77,7 +59,7 @@ pipeline{
                 def deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
                 if(!deployment.exists()){
                   echo "Deploying application component: database, with Application name: ${applicationName}..."
-                  openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=${applicationName}"))
+                  openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=${applicationName}","-p=IMAGE=${env.repository}"))
                   deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
                 }
                 def latestVersion = deployment.object().status.latestVersion
