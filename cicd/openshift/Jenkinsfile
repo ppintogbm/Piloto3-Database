@@ -59,7 +59,7 @@ pipeline{
                 def deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
                 if(!deployment.exists()){
                   echo "Deploying application component: database, with Application name: ${applicationName}..."
-                  openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=${applicationName}","-p=IMAGE=${env.repository}"))
+                  openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=${applicationName}","-p=IMAGE=${params.app}-db"))
                   deployment = openshift.selector('dc',[template: 'calculadora-db', app: applicationName])
                 }
                 def latestVersion = deployment.object().status.latestVersion
