@@ -56,11 +56,11 @@ pipeline{
             openshift.withCluster(){
               openshift.withProject(){
                 def applicationName = !params.appOverride? "calculadora":params.appOverride
-                def deployment = openshift.selector('dc',[app: "${applicationName}-db"])
+                def deployment = openshift.selector('dc',"${app}-db")
                 if(!deployment.exists()){
                   echo "Deploying application component: database, with Application name: ${applicationName}..."
                   openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=${applicationName}","-p=IMAGE=${params.app}-db","-p=NAMESPACE=${openshift.project()}"))
-                  deployment = openshift.selector('dc',[app: "${applicationName}-db"])
+                  deployment = openshift.selector('dc',"${app}-db")
                 }
                 def latestVersion = deployment.object().status.latestVersion
                 def deploymentName = deployment.object().metadata.name

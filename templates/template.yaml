@@ -34,7 +34,7 @@ parameters:
     displayName: Service Account 
     name: SA
     required: true
-    value: db2sa
+    value: default
   - description: Database password
     displayName: Password
     name: PASSWORD
