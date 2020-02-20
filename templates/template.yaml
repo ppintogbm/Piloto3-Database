@@ -90,6 +90,8 @@ objects:
             template: calculadora-db
             version: "1.0"
             app: ${APP}
+          annotations:
+            sidecar.istio.io/inject: "false"
         spec:
           serviceAccount: ${SA}
           hostNetwork: false
@@ -210,16 +212,16 @@ objects:
       ports:
         - port: 22
           protocol: TCP
-          name: 22-tcp
+          name: tcp-22
         - port: 50000
           protocol: TCP
-          name: 50000-tcp
+          name: tcp-50000
         - port: 55000
           protocol: TCP
-          name: 55000-tcp
+          name: tcp-55000
         - port: 60006
           protocol: TCP
-          name: 60006-tcp
+          name: tcp-60006
         - port: 60007
           protocol: TCP
-          name: 60007-tcp
+          name: tcp-60007
