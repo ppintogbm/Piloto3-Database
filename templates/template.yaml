@@ -6,9 +6,9 @@ metadata:
   tags: ibmcom/db2
 labels:
   template: calculadora-db
-  template-version: "1.0"
+  templateVersion: "1.0"
   component: "database"
-  app: "${APP}"-db
+  app: "${APP}-db"
 parameters:
   - description: Application deployment name
     displayName: Application
