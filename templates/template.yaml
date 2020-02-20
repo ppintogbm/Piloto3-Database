@@ -81,7 +81,7 @@ objects:
       selector:
         template: calculadora-db
         version: "1.0"
-        app: ${APP}
+        app: ${APP}-db
       strategy:
         type: Recreate
       template:
@@ -89,9 +89,9 @@ objects:
           labels:
             template: calculadora-db
             version: "1.0"
-            app: ${APP}
+            app: ${APP}-db
           annotations:
-            sidecar.istio.io/inject: "false"
+            sidecar.istio.io/inject: "true"
         spec:
           serviceAccount: ${SA}
           hostNetwork: false
@@ -202,12 +202,12 @@ objects:
     metadata:
       name: ${APP}-${NAME}
     labels:
-      app: ${APP}
+      app: ${APP}-db
     spec:
       selector:
         template: calculadora-db
         version: "1.0"
-        app: ${APP}
+        app: ${APP}-db
       type: ClusterIP
       ports:
         - port: 22
