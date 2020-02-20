@@ -8,17 +8,20 @@ pipeline{
   }
 	parameters{
     string(name: "app", description: "Application Name overrides")
+		string(name: "project", description: "Application Name overrides")
 	}
 	stages{
 		stage('Prepare'){
 			steps{
 				script{
 					env.tag = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+					env.project = !params.project? "${openshift.project()}":params.project
+					env.app = !params.app? "calculadora":params.app
 				}
 				container('origin'){
 					script{
 						openshift.withCluster(){
-							openshift.withProject(){
+							openshift.withProject(env.project){
 								def imagestream = openshift.selector("imagestream/${params.app}-db")
 								if(!imagestream.exists()){
 									imagestream = openshift.apply([apiVersion: 'v1',kind: 'ImageStream', metadata: [name: "${params.app}-db", labels: [app: "${params.app}" ]]])
@@ -54,12 +57,11 @@ pipeline{
 				container('origin'){
           script{
             openshift.withCluster(){
-              openshift.withProject(){
-                def applicationName = !params.appOverride? "calculadora":params.appOverride
+              openshift.withProject(env.project){
                 def deployment = openshift.selector('dc',"${app}-db")
                 if(!deployment.exists()){
-                  echo "Deploying application component: database, with Application name: ${applicationName}..."
-                  openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=${applicationName}","-p=IMAGE=${params.app}-db","-p=NAMESPACE=${openshift.project()}"))
+                  echo "Deploying application component: database, with Application name: ${env.app}..."
+                  openshift.apply(openshift.process("-f","templates/template.yaml","-p=APP=${env.app}","-p=IMAGE=${params.app}-db","-p=NAMESPACE=${openshift.project()}"))
                   deployment = openshift.selector('dc',"${app}-db")
                 }
                 def latestVersion = deployment.object().status.latestVersion
